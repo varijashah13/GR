@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock title %}
+
+
+{% block body %}
+<div class="container my-3">
+  <h1>Popular news </h1>
+  {% for post in allposts %}
+  <div class="col-md-6">
+    <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+      <div class="col p-4 d-flex flex-column position-static">
+        <strong class="d-inline-block mb-2 text-primary">Article by: {{post.author}}</strong>
+        <h3 class="mb-0"><a class="text-dark" href="/gr/{{post.slug }}"><h1>{{post.title}}<h1></a></h3>
+        <div class="mb-1 text-muted">Nov 12</div>
+        <p class="card-text mb-auto">{{post.sug| truncatechars:100|safe}}</p>
+        <a href="/gr/{{post.slug }}" role="button" class="btn btn-primary">Continue reading</a>
+      </div>
+      <div class="col-auto d-none d-lg-block">
+        <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img"
+          aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+          <title>Placeholder</title>
+          
+        </svg>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+
+
+{% endblock body %}

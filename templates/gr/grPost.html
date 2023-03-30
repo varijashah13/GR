@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock title %}
+{% block newsactive %}active{% endblock newsactive %}
+
+
+{% block body %}
+{% load extras %}
+
+
+<div class="container">
+  <div class="col-md-8">
+
+
+    <article class="blog-post">
+      <h2 class="blog-post-title mx-auto">{{post.title}}</h2>
+      <p class="blog-post-meta">January 1, 2021 by <a href="#">{{post.author}}</a></p>
+
+      <p>{{post.sug|safe}}</p>
+    </article>
+
+    <!-- <nav class="blog-pagination" aria-label="Pagination">
+          {% comment %} <a class="btn btn-outline-primary rounded-pill" href="#">Older</a>
+          <a class="btn btn-outline-secondary rounded-pill disabled">Newer</a> {% endcomment %}
+        </nav> -->
+
+  </div>
+
+</div>
+<div class="container">
+  <h2>Comments</h2>
+  <div class="my-2">
+    {% if user.is_authenticated %}
+    <form action="/gr/postComment" method="post">
+      {% csrf_token %}
+
+
+      <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Post a comment</label>
+        <input type="text" class="form-control" name="comments">
+        
+
+      </div>
+
+
+      <input type="hidden" name="postSNO" value="{{post.sno}}">
+      <input type="hidden" name="parentsno" value="">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    {% else %}
+    <p>Please login to add comment</p>
+    {% endif %}
+
+
+  </div>
+  {% for comment in comments %}
+  <div class="row my-3">
+    <div class="col-md-1">
+      <img src="/static/img/user.png" alt="user" style="width: 40px;">
+    </div>
+    <div class="col-md-11"><b>{{comment.user.username}}</b> at {{comment.timestamp}}
+      <div>
+        {{comment.comments}}
+      </div>
+      
+      <div class="reply mx-0">
+        {% if user.is_authenticated %}
+          <button class="btn btn-sm btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#replyBox{{comment.sno}}" aria-expanded="false" aria-controls="replyBox{{comment.sno}}">
+            Reply 
+          </button>
+          
+        <div class="collapse" id="replyBox{{comment.sno}}">
+          <div class="card card-body my-2">
+            <form action="/gr/postComment" method="post">
+              {% csrf_token %}
+        
+        
+              <div class="mb-3">
+                <label for="comment" class="form-label">Reply to comment</label>
+                <input type="text" class="form-control" name="comments">
+                <input type="hidden" name="parentsno" value="{{comment.sno}}">
+        
+              </div>
+        
+        
+              <input type="hidden" name="postSNO" value="{{post.sno}}">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+        <div class="replies my-2">
+          {% for reply in repDict|get_val:comment.sno %}
+          <div class="row my-2">
+              <div class="col-md-1 p-1">
+                <img src="/static/img/user.png" alt="user" style="width: 40px;">
+              </div>
+              <div class="col-md-11">
+                <b>{{comment.user.username}}</b> at {{comment.timestamp}}
+               <div> {{reply}}</div>
+                <br>
+              </div>
+              
+          </div>
+            
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+
+
+
+  {% endblock body %}
